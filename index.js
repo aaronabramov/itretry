@@ -1,6 +1,26 @@
+import {inspect} from 'util';
+
+const TIMEOUT = 500;
+
 export default function itretry(retriesLeft = 2, name, fn) {
     let returned;
     let retryable = () => {
+        if (fn.length === 1) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    retryable().then(resolve, reject);
+                }, TIMEOUT);
+                let done = (err) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve();
+                };
+
+                fn(done);
+            });
+        }
+
         try {
             returned = fn();
             if (isPromise(returned)) {
@@ -32,7 +52,13 @@ export default function itretry(retriesLeft = 2, name, fn) {
 
     if (fn.length === 1) {
         // that's the use case where done is passed
-        throw new Error(`have no idea how to deal with it`)
+        it(name, function(done) {
+            retryable().then(() => {
+                done();
+            }).catch((err) => {
+                done(err);
+            });
+        });
     } else {
         it(name, function() {
             return retryable();
