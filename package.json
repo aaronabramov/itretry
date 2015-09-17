@@ -1,0 +1,15 @@
+{
+  "name": "itretry",
+  "version": "0.0.0",
+  "description": "mocha it.retry()",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --compilers js:babel/register test/**/*_test.js"
+  },
+  "author": "Dmitrii Abramov",
+  "license": "MIT",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "mocha": "^2.3.2"
+  }
+}
